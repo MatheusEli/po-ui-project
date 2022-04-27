@@ -5,16 +5,13 @@ import { PoMenuItem } from '@po-ui/ng-components';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
 
   readonly menus: Array<PoMenuItem> = [
-    { label: 'Home', action: this.onClick.bind(this) }
+    {label: 'Sobre o Campeonato', link: '/sobre-o-campeonato'},
+    {label: 'Artilheiros', link: '/artilheiros'},
+    {label: 'Classificação', link: '/classificacao'}
   ];
-
-  private onClick() {
-    alert('Clicked in menu item')
-  }
-
 }
