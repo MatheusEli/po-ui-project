@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PoPageFilter, PoPageListComponent, PoTableColumn } from '@po-ui/ng-components';
+import { Subscription } from 'rxjs';
 import { Artilheiro } from './artilheiro';
 import { ArtilheirosService } from './artilheiros.service';
 
@@ -7,16 +8,16 @@ import { ArtilheirosService } from './artilheiros.service';
   selector: 'app-artilheiros',
   templateUrl: './artilheiros.component.html'
 })
-export class ArtilheirosComponent implements OnInit {
+export class ArtilheirosComponent implements OnInit, OnDestroy {
 
   @ViewChild('poPageList', { static: true }) poPageList: PoPageListComponent
   private disclaimers = []
 
   disclaimerGroup
-
-  searchingArtilheiros: Array<Artilheiro>
-  searchingArtilheirosColumns: Array<PoTableColumn>
-  searchingArtilheirosFiltered: Array<Artilheiro>
+  subscription: Subscription
+  artilheiros: Array<Artilheiro>
+  artilheirosColumns: Array<PoTableColumn>
+  artilheirosFiltered: Array<Artilheiro>
 
   public readonly filterSettings: PoPageFilter = {
     action: this.filterAction.bind(this),
@@ -28,23 +29,23 @@ export class ArtilheirosComponent implements OnInit {
 
   ngOnInit(): void {
     this.disclaimerGroup = {
-      title: 'Filters',
+      title: 'Filtros',
       disclaimers: [],
       change: this.onChangeDisclaimer.bind(this),
       remove: this.onClearDisclaimer.bind(this)
     }
 
-    this.artilheirosService.getItems().subscribe(artilheiros => {
-      this.searchingArtilheiros = artilheiros
-      this.searchingArtilheirosFiltered = [...this.searchingArtilheiros]
+    this.subscription = this.artilheirosService.getItems().subscribe(artilheiros => {
+      this.artilheiros = artilheiros
+      this.artilheirosFiltered = [...this.artilheiros]
     })
-    this.searchingArtilheirosColumns = [
+    this.artilheirosColumns = [
 
       { property: 'nome', label: 'Nome' },
       { property: 'idade', label: 'Idade' },
       { property: 'gols', label: 'Gols' },
       { property: 'partidas', label: 'Partidas' }
-  
+
     ]
   }
 
@@ -54,12 +55,12 @@ export class ArtilheirosComponent implements OnInit {
   }
 
   searchArtilheirosFilter(filters) {
-    this.searchingArtilheirosFiltered = this.searchingArtilheiros.filter(item =>
+    this.artilheirosFiltered = this.artilheiros.filter(item =>
       Object.keys(item).some(key => !(item[key] instanceof Object) && this.includeFilter(item[key], filters)))
   }
 
   resetFilter() {
-    this.searchingArtilheirosFiltered = [...this.searchingArtilheiros]
+    this.artilheirosFiltered = [...this.artilheiros]
   }
 
   filterAction(labelFilter: string | Array<string>) {
@@ -95,5 +96,9 @@ export class ArtilheirosComponent implements OnInit {
 
   includeFilter(item, filters) {
     return filters.some(filter => String(item).toLocaleLowerCase().includes(filter.toLocaleLowerCase()))
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe()
   }
 }

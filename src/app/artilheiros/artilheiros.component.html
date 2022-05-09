@@ -1,7 +1,10 @@
-<po-page-list #poPageList p-title="Artilheiros da temporada" [p-filter]="filterSettings">
+<po-page-list #poPageList p-title="Artilheiros da temporada" [p-filter]="filterSettings"
+    [p-disclaimer-group]="disclaimerGroup">
     <!--<div class="po-row po-mb-md-5">
         <h1 class="po-page-header-title">Artilheiros da temporada</h1>
         <po-button p-label="Adicionar" class="po-ml-md-5 po-mt-md-1" [p-small]="true" routerLink="edit"></po-button>
     </div>-->
-    <po-table [p-sort]="true" [p-items]="searchingArtilheirosFiltered" [p-striped]="true" [p-columns]="searchingArtilheirosColumns" [p-infinite-scroll]="true" [p-height]="500"></po-table>
+    <po-table [p-sort]="true" [p-items]="artilheirosFiltered" [p-striped]="true" [p-columns]="artilheirosColumns"
+        [p-infinite-scroll]="true" [p-height]="500">
+    </po-table>
 </po-page-list>
